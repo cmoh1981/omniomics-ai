@@ -1,0 +1,40 @@
+# OmniOmicsAI Configuration
+
+## API Keys (store securely, use environment variables in production)
+
+# Gemini API
+GEMINI_API_KEY=AIzaSyDDHHT96BJ1dnEriQmR_bkZgzZuMKEI3aI
+
+# Kilo API
+# Kilo API
+KILO_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbnYiOiJwcm9kdWN0aW9uIiwia2lsb1VzZXJJZCI6IjdmN2MzZDA1LTM5NWQtNDhhYS05YjkzLTgzMjIxYzRlODIwMyIsImFwaVRva2VuUGVwcGVyIjoiZjEwODA0OTItZTliMi00N2QxLThlMzktYzkwOGE1MmU1NWJjIiwidmVyc2lvbiI6MywiaWF0IjoxNzcyMzIwMjgzLCJleHAiOjE5MzAwMDAyODN9.RoQt4MKVX4oiENfou8pZA9vhihtNDtQBLVAciuS_GXE
+
+## Pipeline Settings
+
+# Default omics type
+DEFAULT_OMICS=proteomics
+
+# LLM Provider (gemini, kilo, claude)
+DEFAULT_LLM_PROVIDER=gemini
+
+# Analysis parameters
+MIN_PROTEINS=1000
+MIN_CELLS=100
+FDR_THRESHOLD=0.05
+LOG2FC_THRESHOLD=1.0
+
+## Multi-omics Integration
+
+# Integration method (mofa2, diablo, snf)
+INTEGRATION_METHOD=mofa2
+
+# Batch correction (combat, limma, none)
+BATCH_CORRECTION=combat
+
+## Output
+
+# Output directory
+OUTPUT_DIR=./results
+
+# Visualization format (png, pdf, html)
+VIZ_FORMAT=html
