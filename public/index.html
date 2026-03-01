@@ -3,132 +3,898 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OmniOmics AI - LLM-Powered Multi-Omics Analysis</title>
+    <title>OmniOmics AI - LLM-Powered Multi-Omics Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #00d4ff;
+            --secondary: #7c3aed;
+            --accent: #f472b6;
+            --dark: #0a0a0f;
+            --dark-mid: #12121a;
+            --dark-light: #1a1a25;
+            --glass: rgba(255,255,255,0.05);
+            --glass-border: rgba(255,255,255,0.1);
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --gradient: linear-gradient(135deg, #00d4ff 0%, #7c3aed 50%, #f472b6 100%);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; color: #fff; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        header { text-align: center; margin-bottom: 40px; }
-        h1 { font-size: 2.5rem; margin-bottom: 10px; background: linear-gradient(90deg, #00d4ff, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .subtitle { font-size: 1.1rem; color: #8892b0; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 30px; flex-wrap: wrap; }
-        .tab { padding: 12px 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; cursor: pointer; transition: all 0.3s; color: #8892b0; }
-        .tab.active { background: linear-gradient(90deg, #00d4ff, #7c3aed); color: #fff; border: none; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .section { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 28px; margin-bottom: 24px; }
-        .section h2 { margin-bottom: 20px; color: #00d4ff; font-size: 1.4rem; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; color: #a8b2d1; font-weight: 500; }
-        input[type="file"] { width: 100%; padding: 16px; background: rgba(0,0,0,0.3); border: 2px dashed rgba(255,255,255,0.2); border-radius: 8px; color: #a8b2d1; cursor: pointer; }
-        input[type="file"]:hover { border-color: #00d4ff; }
-        textarea { width: 100%; min-height: 120px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 16px; color: #fff; font-size: 1rem; margin-bottom: 16px; resize: vertical; }
-        textarea:focus { outline: none; border-color: #00d4ff; }
-        select, button { padding: 12px 24px; border-radius: 8px; font-size: 1rem; cursor: pointer; }
-        select { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); color: #fff; }
-        button { background: linear-gradient(90deg, #00d4ff, #7c3aed); border: none; color: #fff; font-weight: 600; transition: transform 0.2s; }
-        button:hover { transform: scale(1.05); }
-        button:disabled { opacity: 0.6; cursor: not-allowed; }
-        .response { background: rgba(0,0,0,0.3); border-radius: 8px; padding: 20px; min-height: 100px; white-space: pre-wrap; font-family: monospace; color: #a8b2d1; max-height: 400px; overflow-y: auto; }
-        .status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; margin-left: 12px; }
-        .status.online { background: rgba(0,255,136,0.2); color: #00ff88; }
-        .status.error { background: rgba(255,68,68,0.2); color: #ff4444; }
-        .file-info { margin-top: 8px; padding: 8px 12px; background: rgba(0,255,136,0.1); border-radius: 4px; color: #00ff88; font-size: 0.9rem; }
-        .progress { display: none; margin: 16px 0; }
-        .progress-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #00d4ff, #7c3aed); width: 0%; transition: width 0.3s; }
-        .progress-text { margin-top: 8px; color: #8892b0; font-size: 0.9rem; }
-        footer { text-align: center; color: #8892b0; padding: 20px; }
-        footer a { color: #00d4ff; text-decoration: none; }
-        .example-btn { background: rgba(255,255,255,0.1); border: none; color: #a8b2d1; padding: 12px 16px; text-align: left; border-radius: 8px; cursor: pointer; transition: all 0.2s; width: 100%; margin-bottom: 8px; }
-        .example-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(0,212,255,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(124,58,237,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(244,114,182,0.1) 0%, transparent 50%);
+            animation: bgMove 20s ease-in-out infinite;
+        }
+
+        @keyframes bgMove {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(2%, 2%) rotate(1deg); }
+            66% { transform: translate(-2%, 1%) rotate(-1deg); }
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 400px; height: 400px;
+            background: rgba(0,212,255,0.3);
+            top: 10%; left: 10%;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 300px; height: 300px;
+            background: rgba(124,58,237,0.3);
+            top: 60%; right: 10%;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 250px; height: 250px;
+            background: rgba(244,114,182,0.25);
+            bottom: 20%; left: 30%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.05); }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 10px 40px rgba(0,212,255,0.3);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 10px 40px rgba(0,212,255,0.3); }
+            50% { box-shadow: 0 10px 60px rgba(124,58,237,0.5); }
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 8px 16px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            backdrop-filter: blur(10px);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 14px 28px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .nav-tab:hover {
+            color: var(--text);
+            border-color: rgba(0,212,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            color: #fff;
+            border-color: transparent;
+            background: var(--gradient);
+            box-shadow: 0 10px 30px rgba(0,212,255,0.3);
+        }
+
+        /* Content Cards */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            border-color: rgba(0,212,255,0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(124,58,237,0.2));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .file-drop-zone {
+            position: relative;
+            padding: 40px;
+            background: rgba(0,0,0,0.3);
+            border: 2px dashed var(--glass-border);
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-drop-zone:hover {
+            border-color: var(--primary);
+            background: rgba(0,212,255,0.05);
+        }
+
+        .file-drop-zone.dragover {
+            border-color: var(--primary);
+            background: rgba(0,212,255,0.1);
+            transform: scale(1.02);
+        }
+
+        .file-drop-zone input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-drop-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .file-drop-text {
+            color: var(--text-muted);
+        }
+
+        .file-drop-text strong {
+            color: var(--primary);
+        }
+
+        .file-info {
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.3);
+            border-radius: 8px;
+            color: var(--success);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Select Dropdown */
+        .custom-select {
+            position: relative;
+        }
+
+        .custom-select select {
+            width: 100%;
+            padding: 14px 20px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1rem;
+            cursor: pointer;
+            appearance: none;
+            transition: all 0.3s;
+        }
+
+        .custom-select select:hover, .custom-select select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .custom-select::after {
+            content: '▼';
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+            font-size: 0.7rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0,212,255,0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,212,255,0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-lg {
+            padding: 18px 40px;
+            font-size: 1.1rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            display: none;
+            margin: 24px 0;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .progress-container.active {
+            display: block;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 4px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            margin-top: 12px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--glass-border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Results Area */
+        .results-area {
+            background: rgba(0,0,0,0.4);
+            border-radius: 16px;
+            padding: 24px;
+            min-height: 200px;
+            max-height: 500px;
+            overflow-y: auto;
+            font-family: 'Space Grotesk', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--text-muted);
+            white-space: pre-wrap;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .results-area.active {
+            display: block;
+        }
+
+        /* Chat */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .chat-messages {
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 24px;
+            min-height: 250px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-muted);
+        }
+
+        .chat-input-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 16px 20px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1rem;
+            resize: none;
+            transition: all 0.3s;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .quick-btn {
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: var(--text-muted);
+            text-align: left;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .quick-btn:hover {
+            background: rgba(0,212,255,0.1);
+            border-color: rgba(0,212,255,0.3);
+            color: var(--text);
+            transform: translateX(4px);
+        }
+
+        .quick-btn-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .info-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+
+        .info-card:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(0,212,255,0.3);
+        }
+
+        .info-card h3 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: var(--accent);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .container { padding: 24px 16px; }
+            .card { padding: 24px; }
+            .nav-tabs { gap: 8px; }
+            .nav-tab { padding: 12px 20px; font-size: 0.9rem; }
+        }
     </style>
 </head>
 <body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
     <div class="container">
+        <!-- Header -->
         <header>
+            <div class="logo">
+                <div class="logo-icon">🧬</div>
+            </div>
             <h1>OmniOmics AI</h1>
-            <p class="subtitle">LLM-Powered Multi-Omics Analysis</p>
-            <span class="status online" id="status">Checking...</span>
+            <p class="subtitle">LLM-Powered Multi-Omics Analysis Platform</p>
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                <span id="status">Checking API...</span>
+            </div>
         </header>
 
-        <div class="tabs">
-            <div class="tab active" onclick="switchTab('upload')">📤 Upload & Analyze</div>
-            <div class="tab" onclick="switchTab('chat')">💬 AI Chat</div>
-            <div class="tab" onclick="switchTab('info')">ℹ️ Info</div>
-        </div>
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <div class="nav-tab active" data-tab="upload">📤 Upload & Analyze</div>
+            <div class="nav-tab" data-tab="chat">💬 AI Assistant</div>
+            <div class="nav-tab" data-tab="info">ℹ️ Platform Info</div>
+        </nav>
 
+        <!-- Upload Tab -->
         <div id="upload" class="tab-content active">
-            <div class="section">
-                <h2>🧬 Proteomics Analysis</h2>
-                <div class="form-group">
-                    <label>Upload Protein Groups File (MaxQuant)</label>
-                    <input type="file" id="proteomicsFile" accept=".txt,.csv" onchange="handleFileSelect('proteomics')">
-                    <div class="file-info" id="proteomicsFileInfo" style="display:none;"></div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🧬</div>
+                    <h2 class="card-title">Proteomics Analysis</h2>
                 </div>
+
                 <div class="form-group">
-                    <label>Experimental Design (Optional CSV)</label>
-                    <input type="file" id="designFile" accept=".csv" onchange="handleFileSelect('design')">
-                    <div class="file-info" id="designFileInfo" style="display:none;"></div>
+                    <label class="form-label">Protein Groups File (MaxQuant)</label>
+                    <div class="file-drop-zone" id="dropZone1">
+                        <input type="file" id="proteomicsFile" accept=".txt,.csv" onchange="handleFileSelect('proteomics')">
+                        <span class="file-drop-icon">📊</span>
+                        <p class="file-drop-text">
+                            <strong>Click to upload</strong> or drag and drop<br>
+                            <small>proteinGroups.txt or .csv</small>
+                        </p>
+                    </div>
+                    <div class="file-info" id="proteomicsFileInfo" style="display:none;">
+                        ✓ <span id="proteomicsFileName"></span> (<span id="proteomicsFileSize"></span>)
+                    </div>
                 </div>
+
                 <div class="form-group">
-                    <label>LLM Provider</label>
-                    <select id="analysisProvider">
-                        <option value="gemini">Gemini (Google)</option>
-                        <option value="kilo">Claude (via Kilo)</option>
-                    </select>
+                    <label class="form-label">Experimental Design (Optional)</label>
+                    <div class="file-drop-zone" id="dropZone2">
+                        <input type="file" id="designFile" accept=".csv" onchange="handleFileSelect('design')">
+                        <span class="file-drop-icon">📋</span>
+                        <p class="file-drop-text">
+                            <strong>Click to upload</strong> or drag and drop<br>
+                            <small>sample metadata CSV</small>
+                        </p>
+                    </div>
+                    <div class="file-info" id="designFileInfo" style="display:none;">
+                        ✓ <span id="designFileName"></span> (<span id="designFileSize"></span>)
+                    </div>
                 </div>
-                <button onclick="runAnalysis()" id="analyzeBtn">🚀 Run Analysis</button>
-                <div class="progress" id="progress">
-                    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-                    <div class="progress-text" id="progressText">Processing...</div>
+
+                <div class="form-group">
+                    <label class="form-label">AI Model</label>
+                    <div class="custom-select">
+                        <select id="analysisProvider">
+                            <option value="gemini">✨ Gemini 2.0 Flash (Google)</option>
+                            <option value="kilo">🧠 Claude Sonnet (via Kilo)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-lg" onclick="runAnalysis()" id="analyzeBtn">
+                    🚀 Run AI-Powered Analysis
+                </button>
+
+                <div class="progress-container" id="progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p class="progress-text">
+                        <span class="spinner"></span>
+                        <span id="progressText">Processing...</span>
+                    </p>
                 </div>
             </div>
-            <div class="section" id="resultsSection" style="display:none;">
-                <h2>📊 Analysis Results</h2>
-                <div class="response" id="analysisResults">Results will appear here...</div>
+
+            <div class="card" id="resultsCard" style="display:none;">
+                <div class="card-header">
+                    <div class="card-icon">📊</div>
+                    <h2 class="card-title">Analysis Results</h2>
+                </div>
+                <div class="results-area active" id="analysisResults">
+                    Results will appear here...
+                </div>
             </div>
         </div>
 
+        <!-- Chat Tab -->
         <div id="chat" class="tab-content">
-            <div class="section">
-                <h2>🤖 Ask About Omics Data</h2>
-                <div class="form-group">
-                    <select id="chatProvider">
-                        <option value="gemini">Gemini (Google)</option>
-                        <option value="kilo">Claude (via Kilo)</option>
-                    </select>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🤖</div>
+                    <h2 class="card-title">AI Research Assistant</h2>
                 </div>
-                <textarea id="chatPrompt" placeholder="Ask about proteomics, transcriptomics, multi-omics integration..."></textarea>
-                <button onclick="sendChat()" id="chatBtn">Send</button>
-                <div class="response" id="chatResponse" style="margin-top: 20px;">Response will appear here...</div>
-            </div>
-            <div class="section">
-                <h2>💡 Example Questions</h2>
-                <button class="example-btn" onclick="setChatPrompt('What biological pathways are affected when 50 proteins are upregulated in a treatment group?')">What pathways are affected?</button>
-                <button class="example-btn" onclick="setChatPrompt('Explain LFQ vs spectral counting in proteomics')">Explain LFQ vs spectral counting</button>
-                <button class="example-btn" onclick="setChatPrompt('How do you perform multi-omics integration?')">How to do multi-omics integration?</button>
-                <button class="example-btn" onclick="setChatPrompt('QC metrics for MaxQuant proteomics data')">QC metrics for MaxQuant</button>
+
+                <div class="form-group">
+                    <div class="custom-select">
+                        <select id="chatProvider">
+                            <option value="gemini">✨ Gemini 2.0 Flash (Google)</option>
+                            <option value="kilo">🧠 Claude Sonnet (via Kilo)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        👋 Hi! I'm your AI research assistant for omics data analysis. Ask me anything about proteomics, transcriptomics, multi-omics integration, or bioinformatics!
+                    </div>
+                    <div class="chat-input-group">
+                        <textarea class="chat-input" id="chatPrompt" rows="2" placeholder="Ask about proteomics, pathways, multi-omics..."></textarea>
+                        <button class="btn btn-primary" onclick="sendChat()" id="chatBtn">Send</button>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <button class="quick-btn" onclick="setChatPrompt('What biological pathways are affected when many proteins are upregulated in a treatment group?')">
+                        <span class="quick-btn-icon">🧪</span>
+                        <span>What pathways are affected?</span>
+                    </button>
+                    <button class="quick-btn" onclick="setChatPrompt('Explain the difference between LFQ and spectral counting in proteomics')">
+                        <span class="quick-btn-icon">📖</span>
+                        <span>LFQ vs spectral counting</span>
+                    </button>
+                    <button class="quick-btn" onclick="setChatPrompt('How do you perform multi-omics integration using MOFA?')">
+                        <span class="quick-btn-icon">🔗</span>
+                        <span>Multi-omics MOFA integration</span>
+                    </button>
+                    <button class="quick-btn" onclick="setChatPrompt('What QC metrics should I check for MaxQuant proteomics data?')">
+                        <span class="quick-btn-icon">✅</span>
+                        <span>QC metrics for MaxQuant</span>
+                    </button>
+                </div>
             </div>
         </div>
 
+        <!-- Info Tab -->
         <div id="info" class="tab-content">
-            <div class="section">
-                <h2>🧬 Supported Analysis</h2>
-                <button class="example-btn" style="cursor:default;"><strong>Proteomics:</strong> Differential expression, pathway analysis</button>
-                <button class="example-btn" style="cursor:default;"><strong>Transcriptomics:</strong> RNA-seq, gene expression</button>
-                <button class="example-btn" style="cursor:default;"><strong>Multi-omics:</strong> PCA, MOFA integration</button>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🧬</div>
+                    <h2 class="card-title">Supported Analysis Types</h2>
+                </div>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>🧬 Proteomics</h3>
+                        <p>Differential expression analysis, pathway enrichment, protein quantification from MaxQuant, DIA-NN output.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>🧬 Transcriptomics</h3>
+                        <p>RNA-seq analysis, gene expression profiling, differential gene expression.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>🗺️ Spatial Omics</h3>
+                        <p>Spatial transcriptomics, cell-cell communication, tissue mapping.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>🔗 Multi-omics</h3>
+                        <p>Integration using PCA, MOFA, correlation-based methods, and cross-omics analysis.</p>
+                    </div>
+                </div>
             </div>
-            <div class="section">
-                <h2>📁 File Formats</h2>
-                <button class="example-btn" style="cursor:default;">proteinGroups.txt (MaxQuant)</button>
-                <button class="example-btn" style="cursor:default;">report.tsv (DIA-NN)</button>
-                <button class="example-btn" style="cursor:default;">Count matrices (CSV)</button>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📁</div>
+                    <h2 class="card-title">File Formats</h2>
+                </div>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>📊 Proteomics</h3>
+                        <p>proteinGroups.txt (MaxQuant), report.tsv (DIA-NN/Spectronaut)</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>📈 Transcriptomics</h3>
+                        <p>Count matrices (CSV/TSV), SALMON/STAR output</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>📋 Design Files</h3>
+                        <p>CSV with sample metadata (condition, replicate, batch)</p>
+                    </div>
+                </div>
             </div>
         </div>
 
+        <!-- Footer -->
         <footer>
-            <p>OmniOmics AI - <a href="https://github.com/cmoh1981/omniomics-ai">GitHub</a></p>
+            <p>OmniOmics AI — Powered by Gemini & Claude LLMs</p>
+            <p><a href="https://github.com/cmoh1981/omniomics-ai">GitHub</a> • <a href="#">Documentation</a></p>
         </footer>
     </div>
 
@@ -137,90 +903,140 @@
         let proteomicsFile = null;
         let designFile = null;
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
-        }
+        // Tab Navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
 
+        // File Selection
         function handleFileSelect(type) {
             const input = type === 'proteomics' ? document.getElementById('proteomicsFile') : document.getElementById('designFile');
             const file = input.files[0];
+            
             if (file) {
+                const infoEl = type === 'proteomics' ? document.getElementById('proteomicsFileInfo') : document.getElementById('designFileInfo');
+                const nameEl = type === 'proteomics' ? document.getElementById('proteomicsFileName') : document.getElementById('designFileName');
+                const sizeEl = type === 'proteomics' ? document.getElementById('proteomicsFileSize') : document.getElementById('designFileSize');
+                
                 if (type === 'proteomics') {
                     proteomicsFile = file;
-                    const info = document.getElementById('proteomicsFileInfo');
-                    info.textContent = '✓ ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
-                    info.style.display = 'block';
+                    nameEl.textContent = file.name;
+                    sizeEl.textContent = (file.size / 1024).toFixed(1) + ' KB';
+                    infoEl.style.display = 'flex';
                 } else {
                     designFile = file;
-                    const info = document.getElementById('designFileInfo');
-                    info.textContent = '✓ ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
-                    info.style.display = 'block';
+                    nameEl.textContent = file.name;
+                    sizeEl.textContent = (file.size / 1024).toFixed(1) + ' KB';
+                    infoEl.style.display = 'flex';
                 }
             }
         }
 
+        // Drag and Drop
+        ['dropZone1', 'dropZone2'].forEach((zoneId, index) => {
+            const zone = document.getElementById(zoneId);
+            const type = index === 0 ? 'proteomics' : 'design';
+            
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.classList.add('dragover');
+            });
+            
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('dragover');
+            });
+            
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('dragover');
+                const input = type === 'proteomics' ? document.getElementById('proteomicsFile') : document.getElementById('designFile');
+                if (e.dataTransfer.files.length) {
+                    input.files = e.dataTransfer.files;
+                    handleFileSelect(type);
+                }
+            });
+        });
+
+        // Run Analysis
         async function runAnalysis() {
             const provider = document.getElementById('analysisProvider').value;
-            const resultsDiv = document.getElementById('analysisResults');
             const progress = document.getElementById('progress');
             const progressFill = document.getElementById('progressFill');
             const progressText = document.getElementById('progressText');
             const btn = document.getElementById('analyzeBtn');
+            const resultsCard = document.getElementById('resultsCard');
+            const resultsDiv = document.getElementById('analysisResults');
 
             if (!proteomicsFile) {
-                resultsDiv.textContent = 'Please upload a proteomics file first';
-                document.getElementById('resultsSection').style.display = 'block';
+                resultsCard.style.display = 'block';
+                resultsDiv.textContent = 'Please upload a proteomics file first!';
                 return;
             }
 
             btn.disabled = true;
-            progress.style.display = 'block';
-            resultsDiv.textContent = 'Reading file...';
-            document.getElementById('resultsSection').style.display = 'block';
+            btn.innerHTML = '<span class="spinner"></span> Analyzing...';
+            progress.classList.add('active');
+            progressFill.style.width = '20%';
+            resultsCard.style.display = 'block';
+            resultsDiv.textContent = '📖 Reading file...';
 
             const reader = new FileReader();
             reader.onload = async function(e) {
                 const content = e.target.result;
-                progressFill.style.width = '30%';
-                progressText.textContent = 'Analyzing with LLM...';
+                
+                progressFill.style.width = '50%';
+                progressText.textContent = '🤖 Analyzing with AI...';
 
                 try {
                     const res = await fetch(API_BASE + '/api/analyze', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
-                            prompt: 'Analyze this proteomics data and provide biological insights:\n\n' + content.substring(0, 8000),
+                            prompt: `You are an expert bioinformatics analyst. Analyze this proteomics data and provide biological insights. Include: 1) Summary of the data 2) Key findings 3) Pathway implications 4) Recommendations.\n\nData:\n${content.substring(0, 10000)}`,
                             provider: provider,
                             fileName: proteomicsFile.name
                         })
                     });
+                    
                     const data = await res.json();
+                    
                     progressFill.style.width = '100%';
-                    progressText.textContent = 'Complete!';
+                    progressText.textContent = '✅ Complete!';
+                    
                     resultsDiv.textContent = data.analysis || JSON.stringify(data, null, 2);
                 } catch (err) {
                     resultsDiv.textContent = 'Error: ' + err.message;
                 }
+
                 btn.disabled = false;
-                setTimeout(() => { progress.style.display = 'none'; progressFill.style.width = '0%'; }, 2000);
+                btn.innerHTML = '🚀 Run AI-Powered Analysis';
+                setTimeout(() => {
+                    progress.classList.remove('active');
+                    progressFill.style.width = '0%';
+                }, 2000);
             };
             reader.readAsText(proteomicsFile);
         }
 
+        // Send Chat
         async function sendChat() {
             const prompt = document.getElementById('chatPrompt').value;
             const provider = document.getElementById('chatProvider').value;
-            const responseDiv = document.getElementById('chatResponse');
+            const messagesDiv = document.getElementById('chatMessages');
             const btn = document.getElementById('chatBtn');
 
-            if (!prompt.trim()) { responseDiv.textContent = 'Please enter a question'; return; }
+            if (!prompt.trim()) return;
 
+            messagesDiv.innerHTML += `\n\n👤 You: ${prompt}`;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
             btn.disabled = true;
-            btn.textContent = 'Thinking...';
-            responseDiv.textContent = 'Processing...';
+            btn.innerHTML = '<span class="spinner"></span>';
 
             try {
                 const res = await fetch(API_BASE + '/api/analyze', {
@@ -229,27 +1045,31 @@
                     body: JSON.stringify({prompt, provider})
                 });
                 const data = await res.json();
-                responseDiv.textContent = data.analysis || JSON.stringify(data, null, 2);
-            } catch (e) { responseDiv.textContent = 'Error: ' + e.message; }
+                messagesDiv.innerHTML += `\n\n🧠 AI: ${data.analysis || JSON.stringify(data, null, 2)}`;
+            } catch (e) {
+                messagesDiv.innerHTML += `\n\n❌ Error: ${e.message}`;
+            }
 
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            document.getElementById('chatPrompt').value = '';
             btn.disabled = false;
-            btn.textContent = 'Send';
+            btn.innerHTML = 'Send';
         }
 
+        // Set Chat Prompt
         function setChatPrompt(text) {
             document.getElementById('chatPrompt').value = text;
-            switchTab('chat');
+            document.querySelectorAll('.nav-tab')[1].click();
         }
 
+        // Check API Status
         async function checkStatus() {
             try {
                 const res = await fetch(API_BASE + '/api/health');
                 const data = await res.json();
                 document.getElementById('status').textContent = 'API Online';
-                document.getElementById('status').className = 'status online';
             } catch (e) {
                 document.getElementById('status').textContent = 'API Offline';
-                document.getElementById('status').className = 'status error';
             }
         }
         checkStatus();
